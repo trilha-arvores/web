@@ -1,0 +1,150 @@
+/* @import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/variables-dark";
+@import "../node_modules/bootstrap/scss/maps";
+@import "../node_modules/bootstrap/scss/mixins";
+@import "../node_modules/bootstrap/scss/root"; */
+
+.gradient {
+    /* fallback for old browsers */
+    background: #2ec27e;
+
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, rgba(46, 194, 126, 0.5), rgba(87, 227, 137, 0.5));
+
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, rgba(46, 194, 126, 0.5), rgba(87, 227, 137, 0.5))
+}
+
+.color-musgo {
+    width: 100%;
+    background: #517300;
+}
+
+.color-txt-musgo{
+    color: #517300;
+}
+
+.btn {
+    background-color: #517300;
+    /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+p {
+    font-family: "Open Sans";
+    font-weight: 300;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+.navbar img {
+    width: 150px;
+}
+
+.btn-interactice:hover {
+    /* background-color: --bs-secondary; */
+    background-color: var(--bs-gray-300);
+}
+
+.btn-interactice:active {
+    /* background-color: --bs-secondary; */
+    background-color: var(--bs-gray-400);
+}
+
+.btn-interactice {
+    width: 24px;
+    border-radius: 50%;
+}
+
+.img-esalq {
+    width: 250px;
+    border-radius: 20%;
+}
+
+@media (max-width: 991.98px) {
+
+    /* Estilos para telas médias e maiores */
+    .navbar img, .descricao, .img-esalq{
+      display: none;
+    }
+  }
+
+  .valid{
+    border-bottom: 2px solid var(--bs-success);
+  }
+
+
+.navbar-brand{
+    margin: 0 0;
+}
+
+#search-btn{
+    border-left: none;
+}
+
+#search-input{
+    border-right: none;
+}
+
+.table-row td{
+    justify-content: center;
+    align-items: center;
+}
+
+.bg-cinza{
+    background-color: #D9D9D9;
+}
+
+.line{
+    border-bottom: 1px solid #E5E5E5;
+}
+
+.table-head{
+    color: #ACACAC;
+    border-bottom: none;
+    padding: 0px !important; 
+}
+
+table {
+    border-collapse: separate;
+    border-spacing:0 1em;
+    font-family: 'Montserrat';
+}
+
+tbody th:first-child{
+    border-radius: 1em 0 0 1em;
+}
+
+tbody td:last-child{
+    border-radius: 0 1em 1em 0;
+}
+
+.navbar-brand{
+    font-weight: bold;
+}
+
+#search-input{
+    border-radius: 2rem 0 0 2rem;
+}
+
+#search-btn{
+    border-radius: 0 2rem 2rem 0;
+}
+
+.edit{
+    padding: .5rem;
+}
+
+.remove{
+    padding: .5rem;
+}
+
+.img_lista{
+    width: 6rem;
+}
