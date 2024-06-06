@@ -4,80 +4,14 @@
 @import "../node_modules/bootstrap/scss/mixins";
 @import "../node_modules/bootstrap/scss/root"; */
 
-.gradient {
-    /* fallback for old browsers */
-    background: #2ec27e;
-
-    /* Chrome 10-25, Safari 5.1-6 */
-    background: -webkit-linear-gradient(to right, rgba(46, 194, 126, 0.5), rgba(87, 227, 137, 0.5));
-
-    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    background: linear-gradient(to right, rgba(46, 194, 126, 0.5), rgba(87, 227, 137, 0.5))
-}
-
-.color-musgo {
-    width: 100%;
-    background: #517300;
-}
 
 .color-txt-musgo{
     color: #517300;
 }
 
-.btn {
-    background-color: #517300;
-    /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
+.valid{
+border-bottom: 2px solid var(--bs-success);
 }
-
-p {
-    font-family: "Open Sans";
-    font-weight: 300;
-    font-optical-sizing: auto;
-    font-style: normal;
-}
-
-.navbar img {
-    width: 150px;
-}
-
-.btn-interactice:hover {
-    /* background-color: --bs-secondary; */
-    background-color: var(--bs-gray-300);
-}
-
-.btn-interactice:active {
-    /* background-color: --bs-secondary; */
-    background-color: var(--bs-gray-400);
-}
-
-.btn-interactice {
-    width: 24px;
-    border-radius: 50%;
-}
-
-.img-esalq {
-    width: 250px;
-    border-radius: 20%;
-}
-
-@media (max-width: 991.98px) {
-
-    /* Estilos para telas médias e maiores */
-    .navbar img, .descricao, .img-esalq{
-      display: none;
-    }
-  }
-
-  .valid{
-    border-bottom: 2px solid var(--bs-success);
-  }
 
 
 .navbar-brand{

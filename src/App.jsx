@@ -1,12 +1,14 @@
 // import logo from './logo.svg';
-import './App.css';
-import './login.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min.js'
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import Index from './Pages/Index';
-import Login from './Pages/Login';
-import Trilhas from './Pages/Trilhas';
+import './App.css';
+import './login.css';
+import './static/css/main.scss';
+
+import Index from './pages/Index';
+import Login from './pages/Login';
+import Trilhas from './pages/Trilhas';
 
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 

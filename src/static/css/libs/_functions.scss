@@ -1,0 +1,7 @@
+
+/// Gets a palette value.
+/// @param {string} $keys Key(s).
+/// @return {string} Value.
+@function _palette($key) {
+	@return map-get($palette, $key);
+}

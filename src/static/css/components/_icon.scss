@@ -1,0 +1,17 @@
+
+.btn-interactice:hover {
+    /* background-color: --bs-secondary; */
+    background-color: var(--bs-gray-300);
+}
+
+.btn-interactice:active {
+    /* background-color: --bs-secondary; */
+    background-color: var(--bs-gray-400);
+}
+
+.btn-interactice {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    padding: 4px;
+}

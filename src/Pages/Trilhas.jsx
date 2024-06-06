@@ -4,10 +4,9 @@ const Trilhas = () => (
     
     <body className="bg-cinza">
         <nav className="navbar navbar-expand-lg bg-white">
-            <div className="container-fluid">
+            <div className="container">
+                {/* <h2 className="navbar-brand ms-4">Lista de Trilhas</h2> */}
                 <Header/>
-                <h2 className="navbar-brand ms-4">Lista de Trilhas</h2>
-                {/* <!-- <a href="#">Navbar</a> --> */}
                 <form className="d-flex" role="search">
                     <div className="input-group me-4">
                         <input id="search-input" className="form-control" type="search" placeholder="Search..." aria-label="Search"/>
@@ -15,7 +14,7 @@ const Trilhas = () => (
                             <i className="bi bi-search btn-interactice"></i>
                         </span>
                     </div>
-                    <button className="btn btn-outline-success color-musgo" type="submit">Adicionar nova trilha</button>
+                    <button className="btn btn-outline-success w-100" type="submit">Adicionar nova trilha</button>
                 </form>
             </div>
         </nav>

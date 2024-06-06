@@ -1,0 +1,21 @@
+
+.image_div{
+    background-position: center center;
+    background-size: cover;
+    width: 75%;
+    height: 70vh;
+}
+
+.image-background-color{
+    margin-left: auto;
+    width: 75%;
+    height: 100vh;
+    background-color: _palette(fg);
+}
+
+.img-esalq {
+    width: 250px;
+    border-radius: 20%;
+    display: none;
+    background-color: white;
+}
