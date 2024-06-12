@@ -2,10 +2,17 @@
 
 
 @import 'libs/vars';
+@import 'libs/fonts';
 @import 'libs/functions';
+
+
+@import 'pages/trilhas';
 
 
 @import 'components/button';
 @import 'components/imagebg';
 @import 'components/icon';
 @import 'components/header';
+@import 'components/table';
+@import 'components/divline';
+@import 'components/modal';

@@ -42,7 +42,6 @@ const Login = () => {
     
 
     const handleSubmit = async (e) => {
-        console.log("click");
         e.preventDefault();
         
         try{
@@ -131,7 +130,7 @@ const Login = () => {
                                                 value={password}
                                                 required
                                             />
-                                            <button className="input-group-text bg-white"
+                                            <button className="input-group-text"
                                                 id="validationTooltipUsernamePrepend"
                                                 type='button'
                                                 onClick={

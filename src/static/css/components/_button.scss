@@ -1,7 +1,12 @@
 
 
-button{
+*:not(.modal-footer, .modal-header) > button{
     background-color: _palette(fg) !important;
+}
+
+
+button.input-group-text {
+    background-color: initial !important;
 }
 
 .btn{

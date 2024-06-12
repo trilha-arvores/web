@@ -1,0 +1,36 @@
+
+table {
+    border-collapse: separate;
+    border-spacing:0 1em;
+    font-family: 'Montserrat';
+}
+
+tbody th:first-child{
+    border-radius: 1em 0 0 1em;
+}
+
+tbody td:last-child{
+    border-radius: 0 1em 1em 0;
+}
+
+table .btn-interactice{
+    display: flex;
+    color: #517300;
+}
+
+.table-row td{
+    justify-content: center;
+    align-items: center;
+}
+
+.table-head{
+    color: #ACACAC !important;
+    background-color: transparent !important;
+    border-bottom: none;
+    padding: 0px !important; 
+}
+
+.img_lista{
+    width: 6rem;
+    height: calc(0.75 * 6rem);
+}
