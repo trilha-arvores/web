@@ -14,7 +14,8 @@ export default function geoapify(trees){
         for (const [key, value] of Object.entries(params)) {
             if (key === 'marker') {
                 // Adicionar marcadores diretamente sem codificação dupla
-                url.searchParams.append(key, value);
+                if(value != "")
+                    url.searchParams.append(key, value);
             } else if (Array.isArray(value)) {
                 value.forEach(val => url.searchParams.append(key, val));
             } else if (typeof value === 'object' && value !== null) {

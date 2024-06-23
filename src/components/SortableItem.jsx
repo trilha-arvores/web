@@ -17,9 +17,11 @@ export default function SortableItem(props) {
   };
   
   return (
-    <li className='list-group-item p-relative' ref={setNodeRef} style={style} {...attributes} {...listeners}>
-        {props.children}
-        <BsArrowRight className='betwen-trees-arrow'/>
-    </li>
+    <>
+      <li className='list-group-item p-relative tree-draggable-item' ref={setNodeRef} style={style} {...attributes} {...listeners}>
+          {props.children}
+          <BsArrowRight className='betwen-trees-arrow'/>
+      </li>
+    </>
   );
 }

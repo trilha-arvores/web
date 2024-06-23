@@ -6,18 +6,19 @@ import './static/css/main.scss';
 import Index from './pages/Index';
 import Login from './pages/Login';
 import Trilhas from './pages/Trilhas';
+import RequireAuth from './components/RequireAuth';
 
-import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import {Routes, Route} from "react-router-dom";
 
 const App = () => (
     <div>
-        <Router>
-            <Routes>
-                <Route path="/" element={<Index/>} />
-                <Route path="/login" element={<Login/>} />
+        <Routes>
+            <Route path="/" element={<Index/>} />
+            <Route path="/login" element={<Login/>} />
+            <Route element={<RequireAuth/>}>
                 <Route path="/trilhas" element={<Trilhas/>} />
-            </Routes>
-        </Router>
+            </Route>
+        </Routes>
     </div>
 )
 

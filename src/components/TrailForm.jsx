@@ -1,6 +1,7 @@
 import MapTrees from "./MapTrees";
 import {useState, useEffect, useRef} from 'react';
 import { Popover } from 'bootstrap/dist/js/bootstrap.esm.min.js';
+import { BsXCircle, BsPlusLg } from "react-icons/bs";
 import {
     DndContext, 
     closestCenter,
@@ -13,44 +14,156 @@ import {
 
 import SortableItem from './SortableItem';
 
+import axios from '../api/axios';
+import useAuth from "../hooks/useAuth";
+
+const GET_TRAIL_URL = '/admin/trail/';
+const CREATE_TRAIL_URL = '/admin/create'
 
 export default function TrailForm(props) {
+    const {auth} = useAuth();
     
+    const [typeForm, setTypeForm] = useState('create');
     const [trailName, setTrailName] = useState('');
+    const [trailImage, setTrailImage] = useState({});
     const [inputArvore, setInputArvore] = useState('');
-    const [listaArvores, setListaArvores] = useState(['4', '3', '7']);
+    const [listaArvores, setListaArvores] = useState([]);
 
     const popoverRef = useRef();
 
     useEffect(() => {
+        
         Array.from(document.querySelectorAll('div[data-bs-toggle="popover"]'))
           .forEach(popoverNode => new Popover(popoverNode))
     })
 
     useEffect(() => {
-        if(props.trail !== null){
-            setTrailName(props.trail.name);
-        }
-        else{
-            setTrailName('');
+        const fetchTrilha = async () => {
+            try {
+                const response = await axios.get(GET_TRAIL_URL+props.trail.id, {
+                    headers: {
+                        Authorization: auth.accessToken
+                    }
+                });
+                return Object.values(response.data.trees).map(item => item.esalq_id.toString());
+            } catch (err) {
+                console.log("ERROU!!!");
+                return [];
+            }
+
+        };
+
+        const updateTrailInfo = async () => {
+            if(props.trail !== null){
+                setTrailName(props.trail.name);
+                setTypeForm('edit');
+                const arvores = await fetchTrilha();
+                setListaArvores(arvores);
+            }
+            else{
+                setTrailName('');
+                setTypeForm('create');
+                setListaArvores([]);
+            }
         }
 
-        console.log(listaArvores);
+        updateTrailInfo();
     }, [props])
     
 
     useEffect(() => {
         console.log(listaArvores);
     }, [listaArvores])
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if(typeForm == "create"){
+            try{
+                console.log(JSON.stringify({
+                    name: trailName, 
+                    n_trees: listaArvores.length, 
+                    trees: listaArvores,
+                    file: trailImage
+                }))
+                const response = await axios.post(CREATE_TRAIL_URL,
+                    JSON.stringify({
+                        name: trailName, 
+                        n_trees: listaArvores.length, 
+                        trees: listaArvores,
+                        file: trailImage
+                    }),
+                    {
+                        headers: {'Content-Type': 'application/json',
+                                    Authorization: auth.accessToken}
+                    }
+                );
+
+                console.log(response);
+                
+                props.reloadTrails();
+                props.modalFunc();
+            } catch(err){
+                console.log(err);
+    
+                // errRef.current.focus();
+            }
+
+        }
+        
+        // try{
+        //     const response = await axios.post(LOGIN_URL,
+        //         JSON.stringify({username, password}),
+        //         {
+        //             headers: {'Content-Type': 'application/json'},
+        //             // withCredentials: true
+        //         }
+        //     );
+
+        //     const accessToken = response?.data;
+        //     setAuth({username, password, accessToken});
+        //     setUsername('');
+        //     setPassword('');
+        //     navigate('/trilhas', {replace: true})
+        // } catch(err){
+        //     if(!err?.response){
+        //         setErrMsg('Sem Resposta do Servido');
+        //     }
+        //     else if(err.response?.status === 400){
+        //         setErrMsg('Não Autorizado');
+        //     }
+        //     else{
+        //         setErrMsg('LogIn Falhou');
+        //     }
+
+        //     errRef.current.focus();
+        // }
+
+    }
     
 
     const adicionarArvore = () => {
-        // validar se arvore existe no banco
+
+        const input = inputArvore;
+        if (!isNaN(input) && input.trim() !== '') {
+            // validar se arvore existe no banco
+            setListaArvores((prevListaArvores) => {
+                return [...prevListaArvores, inputArvore];
+            });
+            setInputArvore('');
+        }
+        else{
+            console.log("ajeita isso");
+            setInputArvore('');
+        }
+
+    }
+    
+    const removerArvore = () => {
         setListaArvores((prevListaArvores) => {
-            return [...prevListaArvores, inputArvore];
+            return prevListaArvores.filter(arvore => arvore !== inputArvore);
         });
-        // console.log('arvore adicionada');
-        // console.log(listaArvores);
+
         setInputArvore('');
 
     }
@@ -71,8 +184,6 @@ export default function TrailForm(props) {
         }
     };
 
-    
-
     return (
         <div className="modal fade" 
         id="modal_trilha" 
@@ -85,7 +196,7 @@ export default function TrailForm(props) {
             <div className="modal-dialog modal-lg">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title" id="staticBackdropLabel">Adicionar nova trilha</h5>
+                        <h5 className="modal-title" id="staticBackdropLabel">{typeForm=='create'?"Adicionar nova trilha":`Atualizar Trilha "${trailName}"` }</h5>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form>
@@ -110,6 +221,7 @@ export default function TrailForm(props) {
                                         type="file" 
                                         name="imagem_trilha" 
                                         id="imagem_trilha"
+                                        onChange={(e) => setTrailImage(e.target.files[0])}
                                     />
                                 </div>
                             </div>
@@ -118,11 +230,10 @@ export default function TrailForm(props) {
                                     <MapTrees trees={listaArvores}/>
                                 </div>
                                 <div className="col-md-5">
-                                    <label htmlFor="new_tree" className="form-label">Digite o <b>Numero Identificador</b> da nova árvore</label>
+                                    <label htmlFor="new_tree" className="form-label">Digite o <b>Numero Identificador</b> da árvore</label>
                                     <div className="input-group"> 
                                         <input 
                                             className="form-control" 
-                                            accept="image/png, image/jpeg"
                                             type="text" 
                                             name="new_tree" 
                                             id="new_tree"
@@ -132,11 +243,19 @@ export default function TrailForm(props) {
                                         <button 
                                             type="button" 
                                             onClick={adicionarArvore}
-                                            className="btn"
+                                            className="btn btn-success"
                                         >
-                                            Adicionar Arvore
+                                            <BsPlusLg/>
+                                        </button>
+                                        <button 
+                                            type="button" 
+                                            onClick={removerArvore}
+                                            className="btn btn-danger"
+                                        >
+                                            <BsXCircle/>
                                         </button>
                                     </div>  
+                                    
                                     <section className="d-flex align-items-end">
                                         <div
                                             ref={popoverRef}
@@ -159,7 +278,8 @@ export default function TrailForm(props) {
                                             items={listaArvores}
                                             strategy={horizontalListSortingStrategy}
                                         >
-                                            {listaArvores.map((id) => (
+                                            {
+                                            listaArvores.map((id) => (
                                                 <SortableItem key={id}>
                                                     {id}
                                                 </SortableItem>
@@ -171,7 +291,7 @@ export default function TrailForm(props) {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" className="btn btn-primary" onClick={printLista}>Salvar Mudanças</button>
+                            <button type="button" className="btn btn-primary" onClick={handleSubmit}>{typeForm=='create'?"Criar Trilha":"Salvar Mudanças"}</button>
                         </div>
                     </form>
                 </div>

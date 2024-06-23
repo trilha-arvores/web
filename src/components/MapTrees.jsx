@@ -1,7 +1,7 @@
 import geoapify from "../api/geoapify";
 import treesData from '../data/trees';
 import {useState, useEffect} from 'react';
-import { RotatingLines } from "react-loader-spinner";
+import Loading from './Loading';
 
 export default function MapTrees(props) {
     const trees = props.trees;
@@ -16,28 +16,14 @@ export default function MapTrees(props) {
 
     const treeListToObj = (trees) => {
         const treeObjs = [];
-        console.log(trees)
 
         for(const treeId of trees){
             const treeObj = treesData.find(tree => tree.id == treeId)
             treeObjs.push(treeObj);
         } 
         
-        console.log(treeObjs);
         return treeObjs;
     }
-
-    const Loading = () => (
-        <div className="loading">
-            <RotatingLines
-            strokeColor="grey"
-            strokeWidth="5"
-            animationDuration="0.75"
-            width="96"
-            visible={true}
-            />
-        </div>
-    );
 
     return (
         <div className="position-relative">

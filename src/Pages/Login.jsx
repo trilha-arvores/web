@@ -1,17 +1,20 @@
-import {useRef, useState, useEffect, useContext} from 'react';
-import AuthContext from '../context/AuthProvider';
+import {useRef, useState, useEffect} from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import Header from "../components/Header";
 import ImageBg from "../components/ImageBg";
 
 import axios from '../api/axios';
-const LOGIN_URL = '/auth';
+const LOGIN_URL = '/admin/login';
 
 
 const Login = () => {
 
-    const {setAuth} = useContext(AuthContext);
+    const {auth, setAuth} = useAuth();
+
+    const navigate = useNavigate();
 
     const userRef = useRef();
     const errRef = useRef();
@@ -21,8 +24,6 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
-
     
     useEffect(() => {
         userRef.current.focus();
@@ -31,47 +32,29 @@ const Login = () => {
     useEffect(() => {
         setErrMsg('');
     }, [username, password])
-    
-    class HttpError extends Error {
-        constructor(status, message) {
-            super(message);
-            this.response = { status }; // Adicionando a propriedade response para simulação
-            this.name = "HttpError";
-        }
-    }
-    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         
         try{
-            // const response = await axios.post(LOGIN_URL,
-            //     JSON.stringify({username, password}),
-            //     {
-            //         headers: {'Content-Type': 'application/json'},
-            //         withCredentials: true
-            //     }
-            // );
-            // const response = {data: {accessToken: 1242232, roles: 4}};
-            throw new HttpError(401, "URL não encontrada.");
+            const response = await axios.post(LOGIN_URL,
+                JSON.stringify({username, password}),
+                {
+                    headers: {'Content-Type': 'application/json'},
+                    // withCredentials: true
+                }
+            );
 
-            const response = {data: {accessToken: 1242232, roles: 4}};
-            console.log(JSON.stringify(response?.data));
-
-            const accessToken = response?.data?.accessToken;
-            const roles = response?.data?.roles;
-            setAuth({username, password, roles, accessToken});
+            const accessToken = response?.data;
+            setAuth({username, password, accessToken});
             setUsername('');
             setPassword('');
-            setSuccess(true);
+            navigate('/trilhas', {replace: true})
         } catch(err){
             if(!err?.response){
                 setErrMsg('Sem Resposta do Servido');
             }
             else if(err.response?.status === 400){
-                setErrMsg('Falta Nome de Ususário ou Senha');
-            }
-            else if(err.response?.status === 401){
                 setErrMsg('Não Autorizado');
             }
             else{
@@ -142,7 +125,7 @@ const Login = () => {
                                                 }
                                             </button>
                                         </div>
-                                        <label clickable className="mt-3 w-100 text-secondary text-end form-label">Esqueceu a senha?</label>
+                                        <label className="mt-3 w-100 text-secondary text-end form-label clickable">Esqueceu a senha?</label>
                                         
                                         <p ref={errRef} 
                                         className={errMsg ? "invalid-feedback d-block text": ""} 

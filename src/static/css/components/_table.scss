@@ -16,6 +16,7 @@ tbody td:last-child{
 table .btn-interactice{
     display: flex;
     color: #517300;
+    cursor: pointer;
 }
 
 .table-row td{
@@ -33,4 +34,15 @@ table .btn-interactice{
 .img_lista{
     width: 6rem;
     height: calc(0.75 * 6rem);
+}
+
+html, body, #root, #root>div,
+.bg-cinza, .bg-cinza>.container, 
+.bg-cinza>.container table{
+    height: 100%;
+}
+
+.bg-cinza, .bg-cinza>.container{
+    display: flex;
+    flex-direction: column;
 }
