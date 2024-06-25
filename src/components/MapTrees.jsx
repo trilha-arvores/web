@@ -1,5 +1,4 @@
 import geoapify from "../api/geoapify";
-import treesData from '../data/trees';
 import {useState, useEffect} from 'react';
 import Loading from './Loading';
 
