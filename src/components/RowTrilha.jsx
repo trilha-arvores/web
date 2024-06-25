@@ -8,7 +8,7 @@ export default function RowTrilha(props) {
     return (
         <tr className="table-row bg-white trilha_round">
             <th scope="row">
-                <img src={trail.image} className="rounded img_lista" alt={trail.name}/>
+                <img src={trail.thumb_img} className="rounded img_lista" alt={trail.name}/>
             </th>
             <td className="align-middle">{trail.name}</td>
             <td className="align-middle">{trail.n_trees}</td>

@@ -34,12 +34,16 @@ table .btn-interactice{
 .img_lista{
     width: 6rem;
     height: calc(0.75 * 6rem);
+    object-fit: cover;
+    object-position: center;
 }
 
-html, body, #root, #root>div,
-.bg-cinza, .bg-cinza>.container, 
-.bg-cinza>.container table{
+html, body, #root, #root>div{
     height: 100%;
+}
+
+.bg-cinza, .bg-cinza>.container{
+    min-height: 100%;
 }
 
 .bg-cinza, .bg-cinza>.container{
