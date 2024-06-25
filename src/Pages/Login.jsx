@@ -52,7 +52,7 @@ const Login = () => {
             navigate('/trilhas', {replace: true})
         } catch(err){
             if(!err?.response){
-                setErrMsg('Sem Resposta do Servido');
+                setErrMsg('Sem Resposta do Servidor');
             }
             else if(err.response?.status === 400){
                 setErrMsg('Não Autorizado');

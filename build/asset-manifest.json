@@ -1,0 +1,35 @@
+{
+  "files": {
+    "main.css": "/static/css/main.28a74acf.css",
+    "main.js": "/static/js/main.1929df75.js",
+    "static/js/453.47cbe031.chunk.js": "/static/js/453.47cbe031.chunk.js",
+    "static/media/Montserrat-ExtraBoldItalic.ttf": "/static/media/Montserrat-ExtraBoldItalic.a22f67090d6cf291405a.ttf",
+    "static/media/Montserrat-BlackItalic.ttf": "/static/media/Montserrat-BlackItalic.9be75be0721b5c54a837.ttf",
+    "static/media/Montserrat-BoldItalic.ttf": "/static/media/Montserrat-BoldItalic.a169c71c1eb466896fe1.ttf",
+    "static/media/Montserrat-SemiBoldItalic.ttf": "/static/media/Montserrat-SemiBoldItalic.60907ef6dc10bb4e826a.ttf",
+    "static/media/Montserrat-LightItalic.ttf": "/static/media/Montserrat-LightItalic.ac3843da62f0afac7929.ttf",
+    "static/media/Montserrat-MediumItalic.ttf": "/static/media/Montserrat-MediumItalic.67e6dda3939a21720991.ttf",
+    "static/media/Montserrat-Italic.ttf": "/static/media/Montserrat-Italic.f4a742d68090a0bfc33f.ttf",
+    "static/media/Montserrat-ExtraLightItalic.ttf": "/static/media/Montserrat-ExtraLightItalic.8df5777e3ea85687bdf0.ttf",
+    "static/media/Montserrat-ThinItalic.ttf": "/static/media/Montserrat-ThinItalic.c9656dd4aed2ca4f5b1d.ttf",
+    "static/media/Montserrat-ExtraBold.ttf": "/static/media/Montserrat-ExtraBold.6c8b198832c88c649faa.ttf",
+    "static/media/Montserrat-Black.ttf": "/static/media/Montserrat-Black.beacc26b4bbaaf608567.ttf",
+    "static/media/Montserrat-Bold.ttf": "/static/media/Montserrat-Bold.50f0257aa1e905f4bfaf.ttf",
+    "static/media/Montserrat-SemiBold.ttf": "/static/media/Montserrat-SemiBold.93b37a465fc4ec0d0415.ttf",
+    "static/media/Montserrat-Medium.ttf": "/static/media/Montserrat-Medium.b8c6753baa964ccac1ba.ttf",
+    "static/media/Montserrat-Light.ttf": "/static/media/Montserrat-Light.7179b7d2ac9b599db5f9.ttf",
+    "static/media/Montserrat-Regular.ttf": "/static/media/Montserrat-Regular.24785cc015b27a3e964b.ttf",
+    "static/media/Montserrat-ExtraLight.ttf": "/static/media/Montserrat-ExtraLight.d928d1131a9af02cb672.ttf",
+    "static/media/Montserrat-Thin.ttf": "/static/media/Montserrat-Thin.9a7aece9cfe235bc0920.ttf",
+    "static/media/bootstrap-icons.woff?": "/static/media/bootstrap-icons.39795c0b4513de014cf8.woff",
+    "static/media/bootstrap-icons.woff2?": "/static/media/bootstrap-icons.b7bcc075b395c14ce8c2.woff2",
+    "index.html": "/index.html",
+    "main.28a74acf.css.map": "/static/css/main.28a74acf.css.map",
+    "main.1929df75.js.map": "/static/js/main.1929df75.js.map",
+    "453.47cbe031.chunk.js.map": "/static/js/453.47cbe031.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.28a74acf.css",
+    "static/js/main.1929df75.js"
+  ]
+}

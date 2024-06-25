@@ -4,7 +4,7 @@ export default function geoapify(trees){
 
     const querryMarkersCreate = (marker, trees) => {
         return trees.map( (tree, index) => {
-            return `lonlat:${tree.lon},${tree.lat};type:${marker.type};color:${marker.color};size:${marker.size};icon:${marker.icon};icontype:${marker.icontype};text:${index + 1};textsize:${marker.textsize};whitecircle:${marker.whitecircle}`;
+            return `lonlat:${tree.longitude},${tree.latitude};type:${marker.type};color:${marker.color};size:${marker.size};icon:${marker.icon};icontype:${marker.icontype};text:${index + 1};textsize:${marker.textsize};whitecircle:${marker.whitecircle}`;
         }).join('|');
     }
 

@@ -42,7 +42,7 @@ export default function DelTrailForm(props) {
             props.modalFunc();
         } catch (err) {
             if(!err?.response){
-                setErrMsg('Sem Resposta do Servido');
+                setErrMsg('Sem Resposta do Servidor');
             }
             else if(err.response?.status === 401){
                 setErrMsg('Não Autorizado, recarregue a página e tente novamente.');
