@@ -1,6 +1,6 @@
 
 
-*:not(.modal-footer, .modal-header, .input-group) > button{
+*:not(.modal-footer, .modal-header, .input-group, .bnt-normal) > button{
     background-color: _palette(fg) !important;
 }
 

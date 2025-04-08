@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {Modal} from 'bootstrap/dist/js/bootstrap.esm.min.js';
 
 import Header from "../components/Header";
@@ -17,7 +17,8 @@ const Trilhas = () => {
     const {auth} = useAuth();
 
     const [trails, setTrail] = useState([]);
-    const [error, setError] = useState(null);
+    const [errMsg, setErrMsg] = useState('');
+    const errRef = useRef();
     const [loading, setLoading] = useState(false);
 
     const [inputTrail, setInputTrail] = useState(null);
@@ -36,10 +37,19 @@ const Trilhas = () => {
                     Authorization: auth.accessToken
                 }
             });
-            console.log(response);
             setTrail(response.data);
         } catch (err) {
-            setError(err.message);
+            if(!err?.response){
+                setErrMsg('Sem Resposta do Servidor.');
+            }
+            else if(err.response?.status === 401){
+                setErrMsg('Não Autorizado, recarregue a página e tente novamente.');
+            }
+            else{
+                setErrMsg('Não foi possível carregar as trilhas, recarregue a página e tente novamente.');
+            }
+
+            errRef.current.focus();
         } finally {
             setLoading(false);
         }
@@ -71,6 +81,26 @@ const Trilhas = () => {
     const fecharDelModal = () => {
         delModalClass.toggle();
     }
+
+    const LoadingTrilhas = () => (
+        <tr className="table-row bg-white trilha_round">
+            <td colSpan="7" className='p-0 rounded h-auto bg-transparent'>
+                <Loading className="h-auto position-static"/>
+            </td>
+        </tr>
+    );
+    
+    const ErroTrilhas = () => (
+        <tr className={!errMsg?"table-row trilha_round d-none":"table-row trilha_round"}>
+            <td colSpan="7" className='p-0 h-auto bg-transparent border-0'>
+                    <p ref={errRef}
+                        className={errMsg ? "invalid-feedback d-block text": ""} 
+                        aria-live='assertive'>
+                            {errMsg}
+                    </p>
+            </td>
+        </tr>
+    );
     
     return (
         <section className="bg-cinza">
@@ -78,13 +108,13 @@ const Trilhas = () => {
                 <div className="container flex-row-reverse flex-md-row">
                     <Header/>
                     <form className="d-flex" role="search">
-                        <input id="search-input" className="form-control me-4" type="search" placeholder="Search..." aria-label="Search"/>
+                        {/* <input id="search-input" className="form-control me-4" type="search" placeholder="Search..." aria-label="Search"/> */}
                         <button 
                             className="d-none d-md-block btn btn-outline-success w-100" 
                             type="button"
                             onClick={() => {abrirModal(null)}}
                         >
-                            Adicionar nova trilha
+                            Criar nova trilha
                         </button>
                     </form>
                 </div>
@@ -106,10 +136,9 @@ const Trilhas = () => {
                     </tr>
                     </thead>
                     <tbody className="table-body position-relative">
+                        <ErroTrilhas/>
                         {loading?
-                        <tr className="table-row bg-white trilha_round">
-                            <Loading className="h-auto"/>
-                        </tr>
+                            <LoadingTrilhas/>
                         : trails.map(function (trail, index) {
                             return (
                                 <RowTrilha 
@@ -124,7 +153,7 @@ const Trilhas = () => {
                     </tbody>
                 </table>
             </main>
-            <TrailForm trail={inputTrail} modalFunc={fecharModal}/>
+            <TrailForm trail={inputTrail} modalFunc={fecharModal} reloadTrails={fetchLista} modal={modalClass}/>
             <DelTrailForm trail={inputTrail} modalFunc={fecharDelModal} reloadTrails={fetchLista}/>
         </section>
     );

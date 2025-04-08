@@ -1,24 +1,29 @@
 import geoapify from "../api/geoapify";
-import treesData from '../data/trees';
 import {useState, useEffect} from 'react';
 import Loading from './Loading';
 
 export default function MapTrees(props) {
-    const trees = props.trees;
 
-    const [imageUrl, setImageUrl] = useState(geoapify(trees));
+    const [trees, setTrees] = useState({});
+    const [order, setOrder] = useState([]);
+    const [imageUrl, setImageUrl] = useState(geoapify(order));
     const [loaded, setLoaded] = useState(false);
+    
+    useEffect(() => {
+        setTrees(props.trees);
+        setOrder(props.order);
+    }, [props])
 
     useEffect(() => {
-        setImageUrl(geoapify(treeListToObj(trees)));
+        setImageUrl(geoapify(treeListToObj(trees, order)));
         setLoaded(false);
-    }, [trees])
+    }, [trees, order])
 
-    const treeListToObj = (trees) => {
+    const treeListToObj = (trees, order) => {
         const treeObjs = [];
 
-        for(const treeId of trees){
-            const treeObj = treesData.find(tree => tree.id == treeId)
+        for(const treeId of order){
+            const treeObj = Object.values(trees).find(tree => tree.id == treeId)
             treeObjs.push(treeObj);
         } 
         
