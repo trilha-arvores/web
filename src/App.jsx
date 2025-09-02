@@ -3,9 +3,9 @@ import 'bootstrap/dist/js/bootstrap.min.js'
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './static/css/main.scss';
 
-import Index from './pages/Index';
-import Login from './pages/Login';
-import Trilhas from './pages/Trilhas';
+import Index from './Pages/Index';
+import Login from './Pages/Login';
+import Trilhas from './Pages/Trilhas';
 import RequireAuth from './components/RequireAuth';
 
 import {Routes, Route} from "react-router-dom";
