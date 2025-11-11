@@ -30,22 +30,37 @@ export default function geoapify(trees){
         return url.toString();
     }
     
+    const centroid = (arr, defLon, defLat) => {
+    let sumLat = 0, sumLon = 0, count = 0;
+    (arr || []).forEach(t => {
+      const lat = Number(t?.latitude);
+      const lon = Number(t?.longitude);
+      if (Number.isFinite(lat) && Number.isFinite(lon)) {
+        sumLat += lat; sumLon += lon; count++;
+      }
+    });
+    if (count === 0) return { lon: Number(defLon), lat: Number(defLat) };
+    return { lon: sumLon / count, lat: sumLat / count };
+  };    
+
 
     const querryParamsCreate = (def) => {
         
         const markersString = querryMarkersCreate(marker_def, trees);
-
+        const center = centroid(trees, def.queries.lon, def.queries.lat);
         const params = {
             style: def.queries.style,
             width: def.queries.width,
             height: def.queries.height,
-            center: `lonlat:${def.queries.lon},${def.queries.lat}`,
+            center: `lonlat:${center.lon},${center.lat}`,
             zoom: def.queries.zoom,
             marker: decodeURIComponent(markersString),
             scaleFactor: 2,
             apiKey: "c24194447ad64289ac980070dd61d524"
         };
         
+        
+        params.zoom = 16.5;
         const finalUrl = addQueryParams(def.baseUrl, params);
 
         return finalUrl.toString();
