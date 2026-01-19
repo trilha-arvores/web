@@ -12,7 +12,7 @@ import axios from '../api/axios';
 import useAuth from "../hooks/useAuth";
 
 const GET_TRAILS_URL = '/admin/trails';
-
+const DOWNLOAD_URL = 'https://www.mediafire.com/file/lc92s6h18ist69l/Trilha_das_Arvores.apk/file'
 const Trilhas = () => {
     const {auth} = useAuth();
 
@@ -107,8 +107,20 @@ const Trilhas = () => {
             <nav className="navbar navbar-expand-lg bg-white">
                 <div className="container flex-row-reverse flex-md-row">
                     <Header/>
-                    <form className="d-flex" role="search">
-                        {/* <input id="search-input" className="form-control me-4" type="search" placeholder="Search..." aria-label="Search"/> */}
+                    <form className="d-flex align-items-center" role="search">
+                        <a
+                            href={DOWNLOAD_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="d-none d-md-inline-flex btn btn-download align-items-center me-3"
+                            title="Baixar app"
+                            aria-label="Baixar app"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16" className="me-2 download-icon" fill="currentColor">
+                                <path d="M.5 9.9V15h15V9.9h-1V14H1.5V9.9h-1zM8 1.5L3 6.5h3v5h4v-5h3L8 1.5z"/>
+                            </svg>
+                            <span className="d-none d-lg-inline">Baixar app</span>
+                        </a>
                         <button 
                             className="d-none d-md-block btn btn-outline-success w-100" 
                             type="button"

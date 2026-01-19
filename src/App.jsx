@@ -6,6 +6,7 @@ import './static/css/main.scss';
 import Index from './Pages/Index';
 import Login from './Pages/Login';
 import Trilhas from './Pages/Trilhas';
+import Sobre from './Pages/Sobre';
 import RequireAuth from './components/RequireAuth';
 
 import {Routes, Route} from "react-router-dom";
@@ -15,6 +16,7 @@ const App = () => (
         <Routes>
             <Route path="/" element={<Index/>} />
             <Route path="/login" element={<Login/>} />
+            <Route path="/sobre" element={<Sobre/>} />
             <Route element={<RequireAuth/>}>
                 <Route path="/trilhas" element={<Trilhas/>} />
             </Route>

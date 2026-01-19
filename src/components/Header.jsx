@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   return (
@@ -12,14 +12,16 @@ export default function Header() {
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav">
                     <li className="nav-item">
-                        <NavLink className='nav-link fw-bold' activeclassname="active" to="/">Home</NavLink>
+                        <Link className='nav-link fw-bold' to="/">Home</Link>
                     </li>
                     <li className="nav-item">
-                        <NavLink className='nav-link fw-bold' activeclassname="active" to="/trilhas">Aplicativo</NavLink>
+                        <Link className='nav-link fw-bold' to="/trilhas">Aplicativo</Link>
                     </li>
                     <li className="nav-item">
-                        {/* <NavLink className='nav-link' to="/login">Administração</NavLink> */}
-                        <NavLink className='nav-link fw-bold' activeclassname="active" to="/login">Administração</NavLink>
+                        <Link className='nav-link fw-bold' to="/login">Administração</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link className='nav-link fw-bold' to="/sobre">Sobre</Link>
                     </li>
                 </ul>
             </div>
