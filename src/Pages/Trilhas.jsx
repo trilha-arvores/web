@@ -33,7 +33,6 @@ const Trilhas = () => {
         try {
             const response = await axios.get(GET_TRAILS_URL, {
                 headers: {
-                //   Authorization: `Bearer ${auth.accessToken}`
                     Authorization: auth.accessToken
                 }
             });

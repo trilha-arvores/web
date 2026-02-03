@@ -7,6 +7,7 @@ import Index from './Pages/Index';
 import Login from './Pages/Login';
 import Trilhas from './Pages/Trilhas';
 import Sobre from './Pages/Sobre';
+import Arvores from './Pages/Arvores'
 import RequireAuth from './components/RequireAuth';
 
 import {Routes, Route} from "react-router-dom";
@@ -18,7 +19,8 @@ const App = () => (
             <Route path="/login" element={<Login/>} />
             <Route path="/sobre" element={<Sobre/>} />
             <Route element={<RequireAuth/>}>
-                <Route path="/trilhas" element={<Trilhas/>} />
+            <Route path="/trilhas" element={<Trilhas/>} />
+            {/* <Route path="/arvores" element={<Arvores/>} /> */}
             </Route>
         </Routes>
     </div>

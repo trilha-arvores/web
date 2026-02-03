@@ -20,6 +20,9 @@ export default function Header() {
                     <li className="nav-item">
                         <Link className='nav-link fw-bold' to="/login">Administração</Link>
                     </li>
+                    {/* <li className="nav-item">
+                         <Link className='nav-link fw-bold' to="/arvores">Árvores</Link>
+                    </li> */}
                     <li className="nav-item">
                         <Link className='nav-link fw-bold' to="/sobre">Sobre</Link>
                     </li>
