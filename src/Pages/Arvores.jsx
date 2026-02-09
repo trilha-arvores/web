@@ -46,9 +46,18 @@ const Arvores = () => {
             const response = await axios.get(GET_TREES_URL, {
                 headers: { Authorization: auth.accessToken }
             });
-            setTrees(response.data);
+            
+            let data = response.data;
+            if (!Array.isArray(data)) {
+                 // Tenta achar a lista se ela vier dentro de um objeto { data: [...] }
+                 data = data.data || data.results || [];
+                 if(!Array.isArray(data)) data = []; 
+            }
+            setTrees(data);
             setErrMsg('');
+
         } catch (err) {
+            console.error("Erro ao buscar árvores:", err);
             if (!err?.response) {
                 setErrMsg('Sem Resposta do Servidor.');
             } else if (err.response?.status === 401) {
@@ -66,18 +75,23 @@ const Arvores = () => {
         fetchLista();
     }, [fetchLista]);
 
-    // Filtra árvores baseado na pesquisa
-    const filteredTrees = trees.filter((tree) => {
+    const filteredTrees = Array.isArray(trees) ? trees.filter((tree) => {
+        if (!tree) return false;
+
         const searchValue = searchTerm.toLowerCase();
+        
+        // Função auxiliar para evitar erro de .toLowerCase() em null/undefined
+        const safeStr = (str) => (str ? String(str).toLowerCase() : '');
+
         if (filterBy === 'name') {
-            return tree.name.toLowerCase().includes(searchValue) || tree.sci_name.toLowerCase().includes(searchValue);
+            return safeStr(tree.name).includes(searchValue) || safeStr(tree.sci_name).includes(searchValue);
         } else if (filterBy === 'esalqId') {
-            return tree.esalq_id.toString().includes(searchValue);
+            return safeStr(tree.esalq_id).includes(searchValue);
         } else if (filterBy === 'loc') {
-            return tree.loc.toLowerCase().includes(searchValue);
+            return safeStr(tree.loc).includes(searchValue);
         }
         return true;
-    });
+    }) : [];
 
     // Funções do Modal
     const abrirModal = (tree = null) => {
@@ -187,14 +201,14 @@ const Arvores = () => {
                         <tbody>
                             <ErroRow />
                             {loading ? <LoadingRow /> : filteredTrees.map((tree) => (
-                                <tr key={tree.id} className="table-row">
+                                <tr key={tree.id || Math.random()} className="table-row">
                                     <td className="ps-4 fw-bold text-secondary">#{tree.id}</td>
                                     <td><span className="badge bg-success">{tree.esalq_id}</span></td>
                                     <td className="fw-bold">{tree.name}</td>
                                     <td className="fst-italic text-muted">{tree.sci_name || '-'}</td>
                                     <td>{tree.loc || '-'}</td>
-                                    <td><small className="text-muted">{typeof tree.latitude === 'number' ? tree.latitude.toFixed(4) : tree.latitude || '-'}</small></td>
-                                    <td><small className="text-muted">{typeof tree.longitude === 'number' ? tree.longitude.toFixed(4) : tree.longitude || '-'}</small></td>
+                                    <td><small className="text-muted">{typeof tree.latitude === 'number' ? tree.latitude.toFixed(4) : (tree.latitude || '-')}</small></td>
+                                    <td><small className="text-muted">{typeof tree.longitude === 'number' ? tree.longitude.toFixed(4) : (tree.longitude || '-')}</small></td>
                                     <td className="text-end pe-4">
                                         <button 
                                             className="btn btn-sm btn-outline-primary"
