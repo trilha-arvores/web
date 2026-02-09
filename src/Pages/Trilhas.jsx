@@ -120,6 +120,15 @@ const Trilhas = () => {
                             </svg>
                             <span className="d-none d-lg-inline">Baixar app</span>
                         </a>
+                        <a
+                            href="/arvores"
+                            className="d-none d-md-inline-flex btn btn-outline-info align-items-center me-3"
+                            title="Gerenciar Árvores"
+                            aria-label="Gerenciar Árvores"
+                        >
+                            <i className="bi bi-tree me-2"></i>
+                            <span>Árvores</span>
+                        </a>
                         <button 
                             className="d-none d-md-block btn btn-outline-success w-100" 
                             type="button"

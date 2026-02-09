@@ -1,5 +1,6 @@
 import axios from "axios";
+import { getBaseURL } from "../config/api.config";
 
 export default axios.create({
-    baseURL: 'http://200.144.255.186:2281'
+    baseURL: getBaseURL()
 });

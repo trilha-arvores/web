@@ -23,8 +23,15 @@ export default function MapTrees(props) {
         const treeObjs = [];
 
         for(const treeId of order){
-            const treeObj = Object.values(trees).find(tree => tree.id == treeId)
-            treeObjs.push(treeObj);
+            const treeObj = Object.values(trees).find(tree => tree.id === treeId)
+            // Valida se a árvore existe e tem coordenadas válidas
+            if (treeObj && 
+                typeof treeObj.latitude === 'number' && 
+                typeof treeObj.longitude === 'number' &&
+                isFinite(treeObj.latitude) &&
+                isFinite(treeObj.longitude)) {
+                treeObjs.push(treeObj);
+            }
         } 
         
         return treeObjs;
