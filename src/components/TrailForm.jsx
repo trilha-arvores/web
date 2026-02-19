@@ -37,8 +37,8 @@ export default function TrailForm(props) {
     const [trailMapValue, setTrailMapValue] = useState('');
 
     const [inputArvore, setInputArvore] = useState('');
-    const [listaArvores, setListaArvores] = useState([]);
-    const [treeInfo, setTreeInfo] = useState({});
+    const [listaArvores, setListaArvores] = useState([]); // Armazena ESALQ_IDs (Placas)
+    const [treeInfo, setTreeInfo] = useState({}); // Armazena Objetos completos das árvores
 
     const [errMsg, setErrMsg] = useState('');
     const [treeErrMsg, setTreeErrMsg] = useState('');
@@ -53,37 +53,31 @@ export default function TrailForm(props) {
 
     const popoverRef = useRef();
 
+    // Inicialização única
     useEffect(() => {
-        
         Array.from(document.querySelectorAll('div[data-bs-toggle="popover"]'))
           .forEach(popoverNode => new Popover(popoverNode));
           
-          setImageModalClass(Modal.getOrCreateInstance('#imageModal'));
-    })
+        setImageModalClass(Modal.getOrCreateInstance('#imageModal'));
+    }, []);
 
+    // Carregar dados ao abrir o modal
     useEffect(() => {
 
         const fetchTrilha = async () => {
             setLoadedInfo(false);
             try {
                 const response = await axios.get(GET_TRAIL_URL+props.trail.id, {
-                    headers: {
-                        Authorization: auth.accessToken
-                    }
+                    headers: { Authorization: auth.accessToken }
                 });
                 setLoadedInfo(true);
                 setTreeInfo(response.data.trees);
+                // Extrai apenas os ESALQ_IDs para mostrar na lista visual
                 return Object.values(response.data.trees).map(item => item.esalq_id.toString());
             } catch (err) {
-                if(!err?.response){
-                    setErrMsg('Sem Resposta do Servidor.');
-                }
-                else if(err.response?.status === 401){
-                    setErrMsg('Não Autorizado, recarregue a página e tente novamente.');
-                }
-                else{
-                    setErrMsg('Não foi possível carregar as informações da trilha.');
-                }
+                if(!err?.response) setErrMsg('Sem Resposta do Servidor.');
+                else if(err.response?.status === 401) setErrMsg('Não Autorizado.');
+                else setErrMsg('Não foi possível carregar as informações da trilha.');
 
                 setLoadedInfo(false);
                 errRef.current.focus();
@@ -91,7 +85,6 @@ export default function TrailForm(props) {
                 setTreeInfo({});
                 return [];
             }
-
         };
 
         const updateTrailInfo = async () => {
@@ -121,126 +114,97 @@ export default function TrailForm(props) {
             setLoading(false);
         }
 
-        if(props.modal._isShown)
+        if(props.modal && props.modal._isShown)
             updateTrailInfo();
         
-    }, [props.trail])
+    }, [props.trail, props.modal, auth.accessToken]);
 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if(trailName == ''){
+        if(trailName === ''){
             setErrMsg('Nome não pode estar vazio.');
             errRef.current.focus();
-            return ;
+            return;
         }
             
-        if(listaArvores.length == 0){
+        if(listaArvores.length === 0){
             setErrMsg('Por favor insira árvores na trilha.');
             errRef.current.focus();
-            return ;
+            return;
         }
 
-        if(typeForm == "create"){
+        // [CORREÇÃO CRÍTICA] Mapeia ESALQ_ID (Placa) -> ID Interno (Banco de Dados)
+        // Isso garante que o banco consiga criar a relação Foreign Key corretamente.
+        const treesToSend = listaArvores.map(esalqId => {
+            // Procura a árvore completa no objeto treeInfo usando o esalq_id
+            const tree = Object.values(treeInfo).find(t => String(t.esalq_id) === String(esalqId));
+            return tree ? tree.id : null; // Retorna o ID interno (Ex: 55)
+        }).filter(id => id !== null); // Remove falhas
 
-            if(trailImageValue == ''){
-                setErrMsg('Por favor insira a imagem da trilha.');
-                errRef.current.focus();
-                return ;
+        if (treesToSend.length === 0) {
+            setErrMsg('Erro ao processar IDs das árvores. Tente adicionar novamente.');
+            return;
+        }
+
+        setLoading(true);
+        setErrMsg('');
+
+        const formData = new FormData();
+        formData.append('name', trailName);
+        formData.append('trees', JSON.stringify(treesToSend)); // Envia IDs internos
+
+        // Adiciona arquivos apenas se existirem
+        if (trailImage instanceof File) formData.append('thumb_img', trailImage);
+        if (trailMap instanceof File) formData.append('map_img', trailMap);
+
+        try{
+            const config = { headers: { Authorization: auth.accessToken } };
+
+            if(typeForm === "create"){
+                if(!trailImageValue || !trailMapValue) throw new Error("MissingImages");
+                
+                await axios.post(CREATE_TRAIL_URL, formData, config);
+            }
+            else{
+                await axios.patch(UPDATE_TRAIL_URL+props.trail.id, formData, config);
             }
             
-            if(trailMapValue == ''){
-                setErrMsg('Por favor insira o mapa da trilha.');
-                errRef.current.focus();
-                return ;
+            props.reloadTrails();
+            props.modalFunc();
+
+        } catch(err){
+            console.error("Erro ao salvar trilha:", err);
+            
+            if(err.message === "MissingImages"){
+                setErrMsg('Por favor insira a imagem e o mapa da trilha.');
+            }
+            else if(!err?.response){
+                setErrMsg('Sem Resposta do Servidor.');
+            }
+            else if(err.response?.status === 400){
+                setErrMsg('Erro nos dados enviados. Verifique se as árvores são válidas.');
+            }
+            else if(err.response?.status === 401){
+                setErrMsg('Não Autorizado, recarregue a página.');
+            }
+            else{
+                setErrMsg('Falha ao salvar a trilha (Erro Interno).');
             }
 
-            setErrMsg('');
-
-            try{
-                const formData = new FormData();
-                formData.append('name', trailName);
-                formData.append('trees', JSON.stringify(listaArvores));
-                formData.append('thumb_img', trailImage);
-                formData.append('map_img', trailMap);
-                const response = await axios.post(CREATE_TRAIL_URL,
-                    formData,
-                    {
-                        headers: {'Content-Type': 'multipart/form-data',
-                                    Authorization: auth.accessToken}
-                    }
-                );
-                
-                props.reloadTrails();
-                props.modalFunc();
-            } catch(err){
-                if(!err?.response){
-                    setErrMsg('Sem Resposta do Servidor.');
-                }
-                else if(err.response?.status === 400){
-                    setErrMsg('Por favor insira árvores na trilha.');
-                }
-                else if(err.response?.status === 401){
-                    setErrMsg('Não Autorizado, recarregue a página e tente novamente.');
-                }
-                else{
-                    setErrMsg('Não foi possível criar trilha.');
-                }
-    
-                errRef.current.focus();
-            }
-            finally{
-                setLoading(false);
-            }
-
+            errRef.current.focus();
         }
-        else{
-
-            setErrMsg('');
-            setLoading(true);
-
-            try{
-                const formData = new FormData();
-                formData.append('name', trailName);
-                formData.append('trees', JSON.stringify(listaArvores));
-                formData.append('thumb_img', trailImage);
-                formData.append('map_img', trailMap);
-                const response = await axios.patch(UPDATE_TRAIL_URL+props.trail.id,
-                    formData,
-                    {
-                        headers: {'Content-Type': 'multipart/form-data',
-                                    Authorization: auth.accessToken}
-                    }
-                );
-                
-                props.reloadTrails();
-                props.modalFunc();
-            } catch(err){
-                if(!err?.response){
-                    setErrMsg('Sem Resposta do Servidor.');
-                }
-                else if(err.response?.status === 401){
-                    setErrMsg('Não Autorizado, recarregue a página e tente novamente.');
-                }
-                else{
-                    setErrMsg('Não foi possível atualizar trilha.');
-                }
-    
-                errRef.current.focus();
-            }
-            finally{
-                setLoading(false);
-            }
-
+        finally{
+            setLoading(false);
         }
-
     }
     
 
     const adicionarArvore = async (e) => {
         setTreeErrMsg('');
         const input = inputArvore;
+        
         if (!isNaN(input) && input.trim() !== '') {
             if(listaArvores.includes(input)){
                 setTreeErrMsg('A árvore já está na trilha.');
@@ -252,41 +216,40 @@ export default function TrailForm(props) {
             setLoading(true);
 
             try {
+                // Busca árvore pelo ESALQ_ID (Placa)
                 const response = await axios.get(GET_TREE_URL+input, {
-                    headers: {
-                        Authorization: auth.accessToken
-                    }
+                    headers: { Authorization: auth.accessToken }
                 });
 
-                if(response.data.latitude == null){
-                    setErrMsg('Árvore não existe na base de dados.');
-                    errRef.current.focus();
-                    return;
+                if(!response.data || response.data.latitude === null){
+                    throw new Error("InvalidTree");
                 }
 
+                // Salva o objeto completo da árvore no treeInfo
                 setTreeInfo(prevTreeInfo => ({
                     ...prevTreeInfo,
                     [Object.keys(prevTreeInfo).length]: response.data
                 }));
 
+                // Adiciona o ESALQ_ID na lista visual
                 setListaArvores((prevListaArvores) => {
                     return [...prevListaArvores, input];
                 });
+
             } catch (err) {
-                if(!err?.response){
-                    setErrMsg('Sem Resposta do Servidor.');
+                if(err.message === "InvalidTree" || err.response?.status === 404){
+                    setTreeErrMsg('Árvore não encontrada ou sem localização.');
+                }
+                else if(!err?.response){
+                    setTreeErrMsg('Sem Resposta do Servidor.');
                 }
                 else if(err.response?.status === 401){
-                    setErrMsg('Não Autorizado, recarregue a página e tente novamente.');
-                }
-                else if(err.response?.status == 404){
-                    setErrMsg('Árvore não existe na base de dados.');
+                    setTreeErrMsg('Não Autorizado.');
                 }
                 else{
-                    setErrMsg('Virificação da árvore falou.');
+                    setTreeErrMsg('Erro ao verificar árvore.');
                 }
-
-                errRef.current.focus();
+                treeErrRef.current.focus();
             } finally {
                 setLoading(false);
                 setInputArvore('');
@@ -297,16 +260,11 @@ export default function TrailForm(props) {
             setInputArvore('');
             treeErrRef.current.focus();
         }
-
     }
     
     const removerArvore = () => {
-        setListaArvores((prevListaArvores) => {
-            return prevListaArvores.filter(arvore => arvore !== inputArvore);
-        });
-
+        setListaArvores(prev => prev.filter(arvore => arvore !== inputArvore));
         setInputArvore('');
-
     }
 
     const updateTrailImage = (e) => {
@@ -320,29 +278,22 @@ export default function TrailForm(props) {
     }
 
     const openImageModal = () => {
-
         setModalUrlImage(trailImageUrl);
-
         imageModalClass.toggle();
     }
 
     const openMapModal = () => {
-
         setModalUrlImage(trailMapUrl);
-
         imageModalClass.toggle();
     }
 
     const handleDragEnd = (e) => {
-        if (!e.over) return;
-    
-        if (e.active.id !== e.over.id) {
-            setListaArvores((listaArvores) => {
+        if (!e.over || e.active.id === e.over.id) return;
+        setListaArvores((listaArvores) => {
             const oldIdx = listaArvores.indexOf(e.active.id.toString());
             const newIdx = listaArvores.indexOf(e.over.id.toString());
             return arrayMove(listaArvores, oldIdx, newIdx);
-          });
-        }
+        });
     };
 
     return (
@@ -358,7 +309,7 @@ export default function TrailForm(props) {
                 <div className="modal-dialog modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">{typeForm=='create'?"Adicionar nova trilha":`Atualizar Trilha "${trailName}"` }</h5>
+                            <h5 className="modal-title" id="staticBackdropLabel">{typeForm==='create'?"Adicionar nova trilha":`Atualizar Trilha "${trailName}"` }</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form>
@@ -378,12 +329,11 @@ export default function TrailForm(props) {
                                     </div>
                                     <div className="col-md-6 mb-3 bnt-normal">
                                         <label htmlFor="imagem_trilha" className="form-label ms-2">Imagem da Trilha</label>
-                                        {typeForm == 'edit'?
+                                        {typeForm === 'edit' &&
                                         <button type="button" className="btn btn-secondary image-btn mb-2" onClick={openImageModal}>
                                             Ver imagem
                                         </button>
-                                        :
-                                        <></>}
+                                        }
                                         <input 
                                             className="form-control" 
                                             accept="image/png, image/jpeg"
@@ -397,12 +347,11 @@ export default function TrailForm(props) {
                                     </div>
                                     <div className="col-md-6 mb-3 bnt-normal">
                                         <label htmlFor="mapa_trilha" className="form-label ms-2">Mapa da Trilha</label>
-                                        {typeForm == 'edit'?
+                                        {typeForm === 'edit' && 
                                         <button type="button" className="btn btn-secondary image-btn mb-2" onClick={openMapModal}>
                                             Ver mapa
                                         </button>
-                                        :
-                                        <></>}
+                                        }
                                         <input 
                                             className="form-control" 
                                             accept="image/png, image/jpeg"
@@ -417,10 +366,11 @@ export default function TrailForm(props) {
                                 </div>
                                 <div className="mb-3 row align-items-center">
                                     <div className="col-md-7">
+                                        {/* Passa as informações completas para o Mapa desenhar */}
                                         <MapTrees trees={treeInfo} order={listaArvores}/>
                                     </div>
                                     <div className="col-md-5">
-                                        <label htmlFor="new_tree" className="form-label">Digite o <b>Numero Identificador</b> da árvore</label>
+                                        <label htmlFor="new_tree" className="form-label">Digite o <b>Número Identificador</b> (Placa)</label>
                                         <div className="input-group"> 
                                             <input 
                                                 className="form-control" 
@@ -458,7 +408,7 @@ export default function TrailForm(props) {
                                                 data-bs-toggle="popover" 
                                                 data-bs-placement="bottom" 
                                                 title=""
-                                                data-bs-content="O Número Indicador da árvore é aquele que aparece como Número da Placa quando você usa o QrCode."
+                                                data-bs-content="O Número Identificador da árvore é aquele que aparece como Número da Placa quando você usa o QrCode."
                                                 className="tutorial-arvores ms-auto"
                                             >
                                                 O que é o Número Identificador
@@ -469,15 +419,9 @@ export default function TrailForm(props) {
                                 <div className="d-flex justify-content-center">
                                     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                                         <ul className="list-group list-group-horizontal-md">
-                                            <SortableContext 
-                                                items={listaArvores}
-                                                strategy={horizontalListSortingStrategy}
-                                            >
-                                                {
-                                                listaArvores.map((id) => (
-                                                    <SortableItem key={id}>
-                                                        {id}
-                                                    </SortableItem>
+                                            <SortableContext items={listaArvores} strategy={horizontalListSortingStrategy}>
+                                                {listaArvores.map((id) => (
+                                                    <SortableItem key={id}>{id}</SortableItem>
                                                 ))}
                                             </SortableContext>
                                         </ul>
@@ -491,13 +435,14 @@ export default function TrailForm(props) {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="button" className="btn btn-primary" onClick={handleSubmit}>{typeForm=='create'?"Criar Trilha":"Salvar Mudanças"}</button>
+                                <button type="button" className="btn btn-primary" onClick={handleSubmit}>{typeForm==='create'?"Criar Trilha":"Salvar Mudanças"}</button>
                             </div>
                         </form>
                     </div>
                     {loading? <Loading/>: <></>}
                 </div>
             </div>
+            {/* Modal de visualização de imagem omitido por brevidade, mas deve ser mantido se necessário */}
             <div className="modal fade" id="imageModal" tabIndex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
@@ -513,4 +458,4 @@ export default function TrailForm(props) {
             </div>
         </>
     );
-  }
+}

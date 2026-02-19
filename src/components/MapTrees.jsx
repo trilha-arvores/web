@@ -23,7 +23,9 @@ export default function MapTrees(props) {
         const treeObjs = [];
 
         for(const treeId of order){
-            const treeObj = Object.values(trees).find(tree => tree.id === treeId)
+            // [CORREÇÃO] Busca pelo esalq_id e resolve o problema de Texto vs Número
+            const treeObj = Object.values(trees).find(tree => String(tree.esalq_id) === String(treeId));
+            
             // Valida se a árvore existe e tem coordenadas válidas
             if (treeObj && 
                 typeof treeObj.latitude === 'number' && 
